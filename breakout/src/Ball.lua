@@ -28,6 +28,7 @@ function Ball:init(skin)
     -- this will effectively be the color of our ball, and we will index
     -- our table of Quads relating to the global block texture using this
     self.skin = skin
+    self.inPlay = true
 end
 
 --[[
@@ -62,6 +63,9 @@ function Ball:reset()
 end
 
 function Ball:update(dt)
+    if not self.inPlay then
+        return
+    end
     self.x = self.x + self.dx * dt
     self.y = self.y + self.dy * dt
 
@@ -88,6 +92,9 @@ end
 function Ball:render()
     -- gTexture is our global texture for all blocks
     -- gBallFrames is a table of quads mapping to each individual ball skin in the texture
+    if not self.inPlay then
+        return
+    end
     love.graphics.draw(gTextures['main'], gFrames['balls'][self.skin],
         self.x, self.y)
 end
