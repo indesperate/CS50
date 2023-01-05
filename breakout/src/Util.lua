@@ -137,3 +137,9 @@ function GenerateQuadPowerups(atlas)
 
     return quads
 end
+
+function GenerateQuadLock(atlas)
+    local x = 160
+    local y = 48
+    return love.graphics.newQuad(x, y, 32, 16, atlas:getDimensions())
+end

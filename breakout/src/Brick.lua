@@ -14,7 +14,7 @@
     layout of bricks.
 ]]
 
-Brick = Class{}
+Brick = Class {}
 
 -- some of the colors in our palette (to be used with particle systems)
 paletteColors = {
@@ -54,12 +54,13 @@ function Brick:init(x, y)
     -- used for coloring and score calculation
     self.tier = 0
     self.color = 1
-    
+
     self.x = x
     self.y = y
     self.width = 32
     self.height = 16
-    
+    self.lock = false
+
     -- used to determine whether this brick should be rendered
     self.inPlay = true
 
@@ -73,7 +74,7 @@ function Brick:init(x, y)
     self.psystem:setParticleLifetime(0.5, 1)
 
     -- give it an acceleration of anywhere between X1,Y1 and X2,Y2 (0, 0) and (80, 80) here
-    -- gives generally downward 
+    -- gives generally downward
     self.psystem:setLinearAcceleration(-15, 0, 15, 80)
 
     -- spread of particles; normal looks more natural than uniform
@@ -84,7 +85,13 @@ end
     Triggers a hit on the brick, taking it out of play if at 0 health or
     changing its color otherwise.
 ]]
-function Brick:hit()
+function Brick:hit(paddle)
+    if self.lock then
+        gSounds['brick-hit-2']:play()
+        if not paddle.isPowerUp then
+            return
+        end
+    end
     -- set the particle system to interpolate between two colors; in this case, we give
     -- it our self.color but with varying alpha; brighter for higher tiers, fading to 0
     -- over the particle's lifetime (the second color)
@@ -135,11 +142,16 @@ end
 
 function Brick:render()
     if self.inPlay then
-        love.graphics.draw(gTextures['main'], 
-            -- multiply color by 4 (-1) to get our color offset, then add tier to that
-            -- to draw the correct tier and color brick onto the screen
-            gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
-            self.x, self.y)
+        if not self.lock then
+            love.graphics.draw(gTextures['main'],
+                -- multiply color by 4 (-1) to get our color offset, then add tier to that
+                -- to draw the correct tier and color brick onto the screen
+                gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
+                self.x, self.y)
+        else
+            love.graphics.draw(gTextures['main'],
+            gFrames['lock'], self.x, self.y)
+        end
     end
 end
 

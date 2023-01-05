@@ -74,13 +74,13 @@ function PlayState:updateBall(ball, dt)
             self.score = self.score + (brick.tier * 200 + brick.color * 25)
 
             -- trigger the brick's hit function, which removes it from play
-            brick:hit()
+            brick:hit(self.paddle)
 
             self.brickHit = self.brickHit + 1
             if self.brickHit > 10 then
-                self.powerup.inPlay = true
-                self.brickHit = 0
                 self.powerup:reset(brick.x + brick.width / 2, brick.y + brick.height / 2, math.random(9))
+                self.powerup.inPlay = true
+                self.brickHit = self.brickHit - 10
             end
 
             -- if we have enough points, recover a point of health
@@ -163,6 +163,7 @@ function PlayState:updateBall(ball, dt)
     -- if ball goes below bounds, revert to serve state and decrease health
     if ball.y >= VIRTUAL_HEIGHT then
         ball.inPlay = false
+        self.paddle.isPowerUp = false
         gSounds['hurt']:play()
     end
 end
@@ -191,6 +192,7 @@ function PlayState:update(dt)
 
     self.powerup:update(dt)
     if self.powerup.inPlay and self.powerup:collides(self.paddle) then
+        self.paddle.isPowerUp = true
         for i = 1, 3 do
             local newBall = Ball(math.random(7))
             newBall.dx = math.random(-200, 200)
@@ -198,8 +200,8 @@ function PlayState:update(dt)
             newBall.x = self.paddle.x + (self.paddle.width / 2) - 4
             newBall.y = self.paddle.y - 8
             table.insert(self.balls, newBall)
-            self.powerup.inPlay = false
         end
+        self.powerup.inPlay = false
     end
 
     local noBalls = true

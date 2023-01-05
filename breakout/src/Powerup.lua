@@ -52,6 +52,10 @@ function Powerup:update(dt)
         gSounds['wall-hit']:play()
     end
 
+    if self.y >= VIRTUAL_HEIGHT then
+        self.inPlay = false
+    end
+
 end
 
 function Powerup:render()
