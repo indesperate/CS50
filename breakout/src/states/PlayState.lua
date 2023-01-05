@@ -85,7 +85,9 @@ function PlayState:updateBall(ball, dt)
 
             -- if we have enough points, recover a point of health
             if self.score > self.recoverPoints then
-                self.paddle:shrink()
+                if self.health < 3 then
+                    self.paddle:shrink()
+                end
                 -- can't go above 3 health
                 self.health = math.min(3, self.health + 1)
 
