@@ -85,6 +85,7 @@ function PlayState:updateBall(ball, dt)
 
             -- if we have enough points, recover a point of health
             if self.score > self.recoverPoints then
+                self.paddle:shrink()
                 -- can't go above 3 health
                 self.health = math.min(3, self.health + 1)
 
@@ -218,6 +219,7 @@ function PlayState:update(dt)
                 highScores = self.highScores
             })
         else
+            self.paddle:grow()
             gStateMachine:change('serve', {
                 paddle = self.paddle,
                 bricks = self.bricks,
