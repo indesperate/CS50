@@ -28,6 +28,17 @@ function PlayState:init()
 end
 
 function PlayState:update(dt)
+    if love.keyboard.wasPressed('p') then
+        sounds['pause']:play()
+        if gPause then
+            gPause = false
+        else
+            gPause = true
+        end
+    end
+    if gPause then
+        return
+    end
     -- update timer for pipe spawning
     self.timer = self.timer + dt
 
@@ -110,6 +121,10 @@ function PlayState:render()
     love.graphics.print('Score: ' .. tostring(self.score), 8, 8)
 
     self.bird:render()
+    if gPause then
+        love.graphics.setFont(flappyFont)
+        love.graphics.printf("PAUSE", 0, 64, VIRTUAL_WIDTH, 'center')
+    end
 end
 
 --[[
